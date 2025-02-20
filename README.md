@@ -26,12 +26,6 @@ After starting the server, you can interact with the Trade Data API using the fo
 - src/main/kotlin/org/example/tradedataapi/infrastructure/shutdown contains a code when the server is being shut down (
   disconnect from database in our case)
 
-
-## Future ideas
-
-- Host the project on the remote server, so that it can be available anywhere
-- Add more tests that cover more specific cases
-
 ### Enrich JSON Data
 
 - **Endpoint**: `/api/v1/enrich_json`
@@ -56,7 +50,37 @@ You can use a tool like `curl` or Postman to test this endpoint. Here are exampl
     ```bash
   curl -X GET "http://localhost:8080/api/v1/enrich_json" -F "file=@path/to/your/file.csv"
 
-or
+- or
 
-```bash
+  ```bash
   curl -X GET "http://localhost:8080/api/v1/enrich" -F "file=@path/to/your/file.csv"
+
+## Code limitations:
+
+- `/api/v1/enrich_json` might not work with a huge amount of data
+
+### Tasks done:
+
+- Reading data from `.csv` file using multiple flows
+- Filtering all the entries by whether the date is in correct format
+- Adding controllers for handling requests
+- Writing and reading result from Redis database
+- Forming a response into `.csv` or `JSON` format
+- Implemented tests
+
+## Testing results in Postman:
+
+For testing with a huge amount of data, I recommend to set Max response size to at least 200 MB inside Postman settings
+- `api/v1/enrich_json`:
+- ![Result enrich_json](images/postman_enrich.png)
+- `api/v1/enrich_json`:
+- ![Result enrich](images/postman_enrich_json.png)
+
+
+## Future ideas
+
+- Host the project on the remote server, so that it can be available anywhere
+- Add more tests that cover more specific cases
+- Improve logging for cases when the provided date is in the wrong format
+- Fix the problem, where `java.lang.OutOfMemoryError: Java heap space` error occurs when providing a huge amount of data
+  to `api/v1/enrich_json` endpoint
